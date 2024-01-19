@@ -68,6 +68,14 @@ extension HomeView {
                 .onSelect { item in
                     router.route(to: \.item, item)
                 }
+                .onPlayPause { item in
+                    let itemRoute = router.route(to: \.item, item)
+                    guard let mediaSource = item.mediaSources?.first else { return }
+                    itemRoute.child.route(
+                        to: \.videoPlayer,
+                        OnlineVideoPlayerManager(item: item, mediaSource: mediaSource)
+                    )
+                }
         }
     }
 }

@@ -26,6 +26,7 @@ struct CinematicItemSelector<Item: Poster>: View {
     private var itemContextMenu: (Item) -> any View
     private var trailingContent: () -> any View
     private var onSelect: (Item) -> Void
+    private var onPlayPause: (Item) -> Void
 
     let items: [Item]
 
@@ -72,6 +73,11 @@ struct CinematicItemSelector<Item: Poster>: View {
                     .trailing(trailingContent)
                     .onSelect(onSelect)
                     .focusedItem($focusedItem)
+                    .onPlayPauseCommand {
+                        if let focusedItem {
+                            onPlayPause(focusedItem)
+                        }
+                    }
             }
         }
         .frame(height: UIScreen.main.bounds.height - 75)
@@ -96,6 +102,7 @@ extension CinematicItemSelector {
             itemContextMenu: { _ in EmptyView() },
             trailingContent: { EmptyView() },
             onSelect: { _ in },
+            onPlayPause: { _ in },
             items: items
         )
     }
@@ -125,5 +132,9 @@ extension CinematicItemSelector {
 
     func onSelect(_ action: @escaping (Item) -> Void) -> Self {
         copy(modifying: \.onSelect, with: action)
+    }
+
+    func onPlayPause(_ action: @escaping (Item) -> Void) -> Self {
+        copy(modifying: \.onPlayPause, with: action)
     }
 }
